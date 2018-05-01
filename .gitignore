@@ -1,0 +1,10 @@
+cqlite3
+*.db
+*.pid
+media/
+static/
+__ pycache __
+.DS_Store
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
