@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Avg, Count
+
 from django.contrib.auth.models import User
 
 # Create your models here.
@@ -66,6 +68,14 @@ class Note(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, null=True, blank=True, related_name='note_creaded_by', on_delete=models.SET(0))
     updated_by = models.ForeignKey(User, null=True, blank=True, related_name='note_updated_by', on_delete=models.SET(0))
+
+    @property
+    def avg_rating(self):
+        return round(self.rating_set.aggregate(Avg('count'))['count__avg'], 1)
+
+    @property
+    def rating_user_count(self):
+        return self.rating_set.aggregate(Count('user'))['user__count']
 
     def __str__(self):
         return 'Subject: {} Author: {}'.format(self.subject.name, self.author)

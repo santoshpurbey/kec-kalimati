@@ -56,7 +56,10 @@ def home(request):
 
 
 def download(request, pk=None):
-    obj = Note.objects.get(pk=pk)
-    obj.download += 1
-    obj.save()
-    return JsonResponse({'download': obj.download })
+    data = {}
+    if request.is_ajax():
+        obj = Note.objects.get(pk=pk)
+        obj.download += 1
+        obj.save()
+        data = {'download': obj.download }
+    return JsonResponse(data)

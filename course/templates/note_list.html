@@ -9,6 +9,7 @@
                           <th scope="col">Author</th>
                           <th scope="col">College</th>
                           <th scope="col"> Downloaded </th>
+                          <th scope="col"> Rating </th>
                           <th scope="col"> download Links </th>
                         </tr>
                       </thead>
@@ -18,18 +19,25 @@
                           <th scope="row">{{ forloop.counter }}</th>
                           <td>{{ note.author }}</td>
                           <td>{{ note.college }}</td>
-                          <td>{{ note.download }}</td>
-                          <td><a href="{% url 'download' note.pk %}" id ="{{ note.pk }}"  download><button type="button" class="btn btn-success">Download</button></a></td>
+                          <td class="download-{{ note.pk }}">{{ note.download }}</td>
+                          <td class="rating-{{ note.pk }}"> {{ note.avg_rating }}</td>
+                          <td><a href="{{note.note_upload.url}}" download><button type="button" class="btn btn-success" obj_pk="{{ note.pk }}">Download</button></a></td>
                         </tr>
                         {% endfor %}
                       </tbody>
                     </table>
                     {% endif %}
-    <script>
-      $("button").click(function(){
-    $.ajax({url: "download", success: function(result){
-        $("#div1").html(result);
-    }});
+<script>
+  $("button").click(function(){
+      var button = $(this);
+      obj_id = button.attr("obj_pk");
+      url = "/download/"+obj_id+"/";
+      $.ajax({
+            url: url,
+            success: function(result){
+                $("td.download-"+obj_id).html(result["download"]);
+            }
+          });
 });
 </script>
 {% endblock container %}
