@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {% block container %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<style>
+.icon-wrapper, .icon-wrapper-2 {
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+}
+</style>
 <h1> {{ subject_name }}</h1>
 {% if notes %}
         <table class="table table-hover">
@@ -9,6 +20,7 @@
                           <th scope="col">Author</th>
                           <th scope="col">College</th>
                           <th scope="col"> Downloaded </th>
+                          <th scope="col"> Rate Here </th>
                           <th scope="col"> Rating </th>
                           <th scope="col"> download Links </th>
                         </tr>
@@ -20,6 +32,12 @@
                           <td>{{ note.author }}</td>
                           <td>{{ note.college }}</td>
                           <td class="download-{{ note.pk }}">{{ note.download }}</td>
+                          <td class="">
+                            <div class="icon-wrapper">
+                              <span class="icon"><i class="fal fa-thumbs-up" obj_pk="{{ note.pk }}"></i>
+                              </span>
+                            </div>
+                          </td>
                           <td class="rating-{{ note.pk }}"> {{ note.avg_rating }}</td>
                           <td><a href="{{note.note_upload.url}}" download><button type="button" class="btn btn-success" obj_pk="{{ note.pk }}">Download</button></a></td>
                         </tr>
@@ -27,6 +45,31 @@
                       </tbody>
                     </table>
                     {% endif %}
+
+       <!-- The Modal -->
+       <div class="modal fade" id="myModal">
+         <div class="modal-dialog">
+           <div class="modal-content">
+
+             <!-- Modal Header -->
+             <div class="modal-header">
+               <h4 class="modal-title">Modal Heading</h4>
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+             </div>
+
+             <!-- Modal body -->
+             <div class="modal-body">
+
+             </div>
+
+             <!-- Modal footer -->
+             <div class="modal-footer">
+               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+             </div>
+
+           </div>
+         </div>
+      </div>
 <script>
   $("button").click(function(){
       var button = $(this);
@@ -38,6 +81,24 @@
                 $("td.download-"+obj_id).html(result["download"]);
             }
           });
+});
+$("i").click(function(){
+    var rating = $(this);
+    obj_id = rating.attr("obj_pk");
+    url = "/rating/"+obj_id+"/";
+    $.ajax({
+          url: url,
+          success: function(result){
+              // $("td.download-"+obj_id).html(result["download"]);
+              // $('#myModal').modal('show');
+              console.log(result);
+              if (result['error-message']){
+                // alert(result['error-message']);
+                $('#myModal').modal('show');
+                $("#myModal .modal-title").html(result['error-message']);
+              }
+          }
+        });
 });
 </script>
 {% endblock container %}

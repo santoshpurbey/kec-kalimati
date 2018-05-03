@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from functools import reduce
 
-from .models import Subject, Note
+from .models import Subject, Note, Rating
 
 from django.db.models import Q
 
@@ -54,6 +54,18 @@ class SubjectSearchListView(SubjectListView):
 def home(request):
     return render(request, 'home.html', {})
 
+def rating(request, pk=None):
+    data = {}
+    if request.user.is_authenticated:
+        obj = Rating.objects.get(user=request.user, note__pk=pk)
+        print(obj.count)
+        if obj.count < 5:
+            obj.count +=1
+            obj.save()
+        data['count'] = obj.count
+    else:
+        data['error-message'] = "Please Login To Rate"
+    return JsonResponse(data)
 
 def download(request, pk=None):
     data = {}
