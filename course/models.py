@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.db.models import Avg, Count
 
@@ -93,3 +94,29 @@ class Rating(models.Model):
 
     def __str__(self):
         return 'Subject: {} User: {} Rating: {}'.format(self.note.subject.name, self.user.username, self.count)
+
+
+class OnlineLecture(models.Model):
+    lecturer = models.ForeignKey(User, related_name='lecturer_user', on_delete=models.SET(0))
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    topic = models.CharField(max_length=100)
+    video_url = models.URLField()
+    is_live = models.BooleanField(default=False)
+    start_at = models.DateTimeField(default=datetime.now())
+
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Subject: {} Topic: {}'.format(self.subject, self.topic)
+
+
+class Discussion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    lecture = models.ForeignKey(OnlineLecture, related_name='lecture_topic', on_delete=models.CASCADE)
+    question = models.TextField()
+    answer = models.TextField(default='', null=True, blank=True)
+    is_answered = models.BooleanField(default=False)
+    is_visible = models.BooleanField(default=False)
+
+    def __str__(self):
+        return 'Student: {} lecture: {} Question: {}'.format(self.user.username, self.lecture, self.question)

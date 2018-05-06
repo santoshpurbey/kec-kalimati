@@ -1,11 +1,13 @@
 import operator
+from datetime import datetime
 # import requests
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 
 from django.views.generic import ListView, DetailView
 from functools import reduce
 
-from .models import Subject, Note, Rating
+from .models import Subject, Note, Rating, OnlineLecture, Discussion
 
 from django.db.models import Q
 
@@ -17,6 +19,10 @@ class NotelistView(DetailView):
     extra_context = {'subject_name': 'Math'}
     pk_url_kwarg = 'pk'
 
+    # def get_queryset(self):
+    #     result = super().get_queryset().order_by('rating'
+    #     return result
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['notes'] = self.get_object().note_set.all()
@@ -27,6 +33,8 @@ class SubjectListView(ListView):
     model = Subject
     template_name = 'subject_list.html'
     context_object_name = 'subjects'
+
+
 
 
 class SubjectSearchListView(SubjectListView):
@@ -75,3 +83,31 @@ def download(request, pk=None):
         obj.save()
         data = {'download': obj.download }
     return JsonResponse(data)
+
+def clap(request):
+    return render(request, 'clap.html', {})
+
+def string_capture(request,  name=None):
+    return HttpResponse(name)
+
+
+def online_class_list(request):
+    upcoming_classes = OnlineLecture.objects.all().filter(start_at__gte=datetime.now())
+    previous_classes = OnlineLecture.objects.all().filter(start_at__lte=datetime.now())
+    template_name = 'online_class_list.html'
+    context = {
+    'upcoming_classes': upcoming_classes,
+    'previous_classes': previous_classes,
+    }
+
+    return render(request, template_name, context)
+
+
+def online_class_attend(request, pk=None):
+    obj = OnlineLecture.objects.get(pk=pk)
+
+    template_name = 'onlineclass.html'
+    context = {
+    'live_lecture': obj,
+    }
+    return render(request, template_name, context)

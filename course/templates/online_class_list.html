@@ -1,0 +1,16 @@
+<h1> Upcoming classes list </h1>
+{% for class in upcoming_classes %}
+  {{class.subject}}<br>
+  {{class.topic}}<br>
+  {{class.start_at}}<br><br><br><br>
+{% endfor %}
+
+
+<h1> Previous  classes list </h1>
+
+
+{% for class in previous_classes %}
+  {{class.subject}}<br>
+  {{class.topic}}<br>
+  {{class.start_at}}<br><br><br><br>
+{% endfor %}

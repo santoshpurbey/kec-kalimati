@@ -2,7 +2,7 @@ from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
 
 # Register your models here.
-from .models import Subject, Department, Rating, Note
+from .models import Subject, Department, Rating, Note, OnlineLecture, Discussion
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
@@ -27,4 +27,13 @@ class NoteAdmin(admin.ModelAdmin):
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(OnlineLecture)
+class OnlineLectureAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Discussion)
+class DiscussionAdmin(admin.ModelAdmin):
     pass
